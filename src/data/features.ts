@@ -3,6 +3,45 @@ export interface Feature {
 	description: string;
 }
 
+export interface Screenshot {
+	src: string;
+	altitude: string;
+	caption: string;
+	alt: string;
+}
+
+// Captured in-engine on UE5.5, 2026-09-22, after the vertical-line rendering fix. No
+// post-production beyond a resize/re-encode to WebP. Same planet, same weather field, four
+// altitudes on the way down.
+export const screenshots: Screenshot[] = [
+	{
+		src: '/images/welkin-globe.webp',
+		altitude: '20,000 km — full disc',
+		caption:
+			'The whole weather field at once: wide bands of cloud with channels of open ocean between them.',
+		alt: 'An Earth-like planet seen from 20,000 km, most of the disc covered by swirling white cloud bands over deep blue ocean, captured in Unreal Engine 5.5.',
+	},
+	{
+		src: '/images/welkin-mid-400km.webp',
+		altitude: '400 km — orbital',
+		caption:
+			"The atmosphere's blue limb against space, with scattered cumulus clearing enough to show open ocean below.",
+		alt: 'The curved limb of a planet with a blue atmospheric glow against black space, scattered clouds over ocean below, captured in Unreal Engine 5.5.',
+	},
+	{
+		src: '/images/welkin-low-60km.webp',
+		altitude: '60 km — descending',
+		caption: 'The same weather field, resolved down to the frayed, fibrous edge of each cloud mass.',
+		alt: 'A closer view of cloud cover from 60 km altitude, showing detailed frayed edges of cloud masses over blue ocean, captured in Unreal Engine 5.5.',
+	},
+	{
+		src: '/images/welkin-ground.webp',
+		altitude: 'Ground level',
+		caption: 'Looking toward the sun through the lower atmosphere, low on the horizon.',
+		alt: 'A ground-level view looking toward a bright, hazy sun low in the sky, captured in Unreal Engine 5.5.',
+	},
+];
+
 // Every claim here is checked against the plugin's own source (WelkinCloudComponent.h /
 // WelkinAtmosphereTypes.h / WelkinStarActor.h / Welkin.uplugin). Nothing is listed that the
 // code doesn't actually do — no rings, no eclipse shadows, no multiplayer claim.
