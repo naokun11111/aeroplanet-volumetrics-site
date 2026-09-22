@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* 見出し・本文で使うフォントの重み替えなど、Tailwind だけで完結しない微調整のみここに置く */
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: rgb(56 189 248 / 0.35);
+}

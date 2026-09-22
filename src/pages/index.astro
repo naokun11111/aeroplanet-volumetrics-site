@@ -1,0 +1,261 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { features, comparisonRows } from '../data/features';
+
+const steps = [
+	{
+		n: '01',
+		title: 'One height field, two grounds',
+		body: "A single signed height field answers \"how far above the ground, and which way is up.\" Point it at a sphere and you get a planet you can orbit and land on; point it at a plane and you get a flat world. Nothing about how the layer, the march step or the light path works has to change — see it once, and it's correct on both.",
+	},
+	{
+		n: '02',
+		title: 'A member of the scene, not a filter over it',
+		body: "The cloud and atmosphere march runs its own C++/HLSL raymarching pipeline straight after the base pass, when scene depth is already correct — so a mesh in front of the cloud actually occludes it, instead of the cloud being painted over the whole frame regardless. Several components can register at once and sort nearest-first, so more than one atmosphere can share a scene.",
+	},
+	{
+		n: '03',
+		title: 'Physical units, end to end',
+		body: 'Sunlight arrives in lux. Scattering and absorption are per kilometre. Cloud and sky radiance are in cd/m². A star\'s colour comes from its surface temperature by black-body radiation, not a hand-picked tint — so swap the star and the whole sky, every cloud and the ground bounce follow correctly, together.',
+	},
+];
+
+const pricingTiers = [
+	{
+		name: 'Personal',
+		price: '$49.99',
+		blurb: 'For solo developers and small teams working on their own projects.',
+		cta: 'Notify me at launch',
+	},
+	{
+		name: 'Professional',
+		price: '$104.99',
+		blurb: "For studios and teams that fall under Fab's professional licensing tier.",
+		cta: 'Notify me at launch',
+		featured: true,
+	},
+];
+---
+
+<Layout>
+	<!-- Hero -->
+	<section class="relative overflow-hidden">
+		<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+			<div class="absolute left-1/2 top-[-12rem] h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-sky-500/20 blur-[120px]"></div>
+			<div class="absolute right-[-8rem] top-32 h-72 w-72 rounded-full bg-cyan-400/10 blur-[100px]"></div>
+		</div>
+
+		<div class="mx-auto grid max-w-6xl gap-14 px-6 pb-20 pt-20 md:grid-cols-2 md:items-center md:pb-28 md:pt-28">
+			<div>
+				<span class="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-medium text-sky-300">
+					In development · Unreal Engine 5.5
+				</span>
+
+				<h1 class="mt-6 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
+					Clouds and atmosphere that belong to the scene.
+				</h1>
+
+				<p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
+					AeroPlanet Volumetrics is a self-built C++/HLSL raymarching cloud and atmosphere
+					plugin for UE5.5. One height field drives both a planet and a flat map, the march
+					runs after the base pass instead of over it, and a whole planetary system —
+					weather, atmosphere, a physically-lit star, orbits — is built from real units.
+				</p>
+
+				<div class="mt-8 flex flex-wrap items-center gap-4">
+					<a
+						href="https://discord.gg/CW4cqrszqD"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_0_24px_-4px_rgba(56,189,248,0.8)] transition hover:bg-sky-400"
+					>
+						Join the Discord for launch updates
+					</a>
+					<a
+						href="/docs/"
+						class="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-sky-400/50 hover:text-sky-300"
+					>
+						Read the docs
+					</a>
+				</div>
+
+				<p class="mt-6 text-xs text-slate-500">
+					Not yet published on Fab. Pricing below reflects the planned listing.
+				</p>
+			</div>
+
+			<div class="relative mx-auto aspect-square w-full max-w-md" aria-hidden="true">
+				<div class="absolute inset-0 rounded-full bg-gradient-to-br from-sky-400/30 via-slate-900 to-slate-950 shadow-[0_0_120px_-10px_rgba(56,189,248,0.45)]"></div>
+				<div class="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_32%_28%,_#7dd3fc_0%,_#0ea5e9_28%,_#0c4a6e_62%,_#020617_100%)]"></div>
+				<div class="absolute inset-[8%] rounded-full opacity-70 mix-blend-screen [background:repeating-radial-gradient(circle_at_60%_70%,transparent_0,transparent_10px,rgba(255,255,255,0.06)_11px)]"></div>
+				<div class="absolute inset-[-6%] rounded-full border border-sky-300/20"></div>
+				<div class="absolute left-1/2 top-1/2 h-[70%] w-[130%] -translate-x-1/2 -translate-y-1/2 rotate-[-16deg] rounded-full border border-sky-300/25"></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- How it renders -->
+	<section id="how-it-renders" class="border-t border-white/5 bg-slate-950/60 py-24">
+		<div class="mx-auto max-w-6xl px-6">
+			<div class="max-w-2xl">
+				<h2 class="text-sm font-semibold uppercase tracking-widest text-sky-400">How it renders</h2>
+				<p class="mt-3 text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl">
+					Three decisions the whole plugin is built around.
+				</p>
+			</div>
+
+			<div class="mt-14 grid gap-10 md:grid-cols-3">
+				{steps.map((step) => (
+					<div class="relative rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+						<span class="text-5xl font-bold text-sky-500/20">{step.n}</span>
+						<h3 class="mt-4 text-lg font-semibold text-slate-100">{step.title}</h3>
+						<p class="mt-3 text-sm leading-relaxed text-slate-400">{step.body}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Features -->
+	<section id="features" class="border-t border-white/5 py-24">
+		<div class="mx-auto max-w-6xl px-6">
+			<div class="max-w-2xl">
+				<h2 class="text-sm font-semibold uppercase tracking-widest text-sky-400">Features</h2>
+				<p class="mt-3 text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl">
+					What's actually in the plugin.
+				</p>
+			</div>
+
+			<div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				{features.map((feature) => (
+					<div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition hover:border-sky-400/30 hover:bg-white/[0.04]">
+						<h3 class="text-base font-semibold text-slate-100">{feature.title}</h3>
+						<p class="mt-2.5 text-sm leading-relaxed text-slate-400">{feature.description}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Comparison -->
+	<section class="border-t border-white/5 bg-slate-950/60 py-24">
+		<div class="mx-auto max-w-6xl px-6">
+			<div class="max-w-2xl">
+				<h2 class="text-sm font-semibold uppercase tracking-widest text-sky-400">Compared to a flat-world sky system</h2>
+				<p class="mt-3 text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl">
+					Built for a world you can orbit, not only one you can stand on.
+				</p>
+				<p class="mt-4 text-sm text-slate-400">
+					Most sky and cloud plugins are written for a flat level with one sun. This is a
+					general description of that class of tool, not any specific product.
+				</p>
+			</div>
+
+			<div class="mt-12 overflow-x-auto rounded-2xl border border-white/10">
+				<table class="w-full min-w-[640px] border-collapse text-left text-sm">
+					<thead>
+						<tr class="border-b border-white/10 bg-white/[0.03] text-slate-300">
+							<th class="w-1/5 px-5 py-4 font-semibold">&nbsp;</th>
+							<th class="w-2/5 px-5 py-4 font-semibold text-sky-300">AeroPlanet Volumetrics</th>
+							<th class="w-2/5 px-5 py-4 font-semibold">Typical flat-world plugin</th>
+						</tr>
+					</thead>
+					<tbody>
+						{comparisonRows.map((row, i) => (
+							<tr class={i % 2 === 0 ? 'bg-white/[0.015]' : ''}>
+								<th scope="row" class="px-5 py-4 align-top font-medium text-slate-300">{row.topic}</th>
+								<td class="px-5 py-4 align-top text-slate-200">{row.welkin}</td>
+								<td class="px-5 py-4 align-top text-slate-500">{row.typical}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<!-- Pricing -->
+	<section id="pricing" class="border-t border-white/5 py-24">
+		<div class="mx-auto max-w-6xl px-6">
+			<div class="max-w-2xl">
+				<h2 class="text-sm font-semibold uppercase tracking-widest text-sky-400">Pricing</h2>
+				<p class="mt-3 text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl">
+					Launching on Fab, in the Procedural Systems category.
+				</p>
+				<p class="mt-4 text-sm text-slate-400">
+					AeroPlanet Volumetrics is not published yet — a visual issue is being fixed before
+					launch. The prices below are the planned Fab listing; both tiers unlock the full
+					plugin, and the difference is which of Fab's standard licence tiers applies to your
+					use. Join the Discord to hear the moment it goes live.
+				</p>
+			</div>
+
+			<div class="mt-12 grid gap-6 sm:grid-cols-2">
+				{pricingTiers.map((tier) => (
+					<div
+						class:list={[
+							'rounded-2xl border p-8',
+							tier.featured
+								? 'border-sky-400/40 bg-sky-400/[0.06] shadow-[0_0_40px_-12px_rgba(56,189,248,0.5)]'
+								: 'border-white/10 bg-white/[0.02]',
+						]}
+					>
+						<p class="text-sm font-semibold uppercase tracking-wide text-sky-300">{tier.name}</p>
+						<p class="mt-3 text-4xl font-bold text-slate-50">{tier.price}</p>
+						<p class="mt-1 text-xs text-slate-500">one-time, planned Fab price</p>
+						<p class="mt-4 text-sm leading-relaxed text-slate-400">{tier.blurb}</p>
+						<a
+							href="https://discord.gg/CW4cqrszqD"
+							target="_blank"
+							rel="noopener noreferrer"
+							class:list={[
+								'mt-6 inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition',
+								tier.featured
+									? 'bg-sky-500 text-slate-950 hover:bg-sky-400'
+									: 'border border-white/15 text-slate-200 hover:border-sky-400/50 hover:text-sky-300',
+							]}
+						>
+							{tier.cta}
+						</a>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Support -->
+	<section class="border-t border-white/5 bg-slate-950/60 py-24">
+		<div class="mx-auto max-w-6xl px-6">
+			<div class="rounded-2xl border border-white/10 bg-white/[0.02] p-10 sm:p-14">
+				<div class="grid gap-10 sm:grid-cols-2 sm:items-center">
+					<div>
+						<h2 class="text-sm font-semibold uppercase tracking-widest text-sky-400">Support</h2>
+						<p class="mt-3 text-3xl font-bold tracking-tight text-slate-50">Questions before launch?</p>
+						<p class="mt-4 text-sm leading-relaxed text-slate-400">
+							The Discord server is where development updates, work-in-progress renders and
+							support happen first. Email works too, for anything that needs to stay private.
+						</p>
+					</div>
+					<div class="flex flex-col gap-4 sm:items-end">
+						<a
+							href="https://discord.gg/CW4cqrszqD"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex w-full items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-slate-200 transition hover:border-sky-400/40 hover:text-sky-300 sm:w-72"
+						>
+							<span>Naokun Studio on Discord</span>
+							<span aria-hidden="true">&rarr;</span>
+						</a>
+						<a
+							href="mailto:naokun1037@gmail.com"
+							class="flex w-full items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-slate-200 transition hover:border-sky-400/40 hover:text-sky-300 sm:w-72"
+						>
+							<span>naokun1037@gmail.com</span>
+							<span aria-hidden="true">&rarr;</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

@@ -1,0 +1,249 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {
+	starActor,
+	orbiter,
+	cloudActor,
+	cloudComponent,
+	atmosphereParams,
+	paintFunctions,
+	limitations,
+	type ReferenceSection,
+} from '../data/docs';
+
+const referenceSections: ReferenceSection[] = [starActor, orbiter, cloudActor, cloudComponent, atmosphereParams];
+
+const toc = [
+	{ href: '#quickstart', label: 'Quickstart' },
+	{ href: '#reference', label: 'Actor & component reference' },
+	{ href: '#painting', label: 'Painting coverage by hand' },
+	{ href: '#limitations', label: 'Known limitations' },
+];
+---
+
+<Layout
+	title="Documentation — AeroPlanet Volumetrics"
+	description="Quickstart, actor and component reference, and known limitations for the AeroPlanet Volumetrics UE5.5 plugin — written from the plugin's own source."
+>
+	<div class="mx-auto max-w-6xl px-6 py-16">
+		<div class="max-w-2xl">
+			<span class="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-medium text-sky-300">
+				Docs
+			</span>
+			<h1 class="mt-5 text-4xl font-bold tracking-tight text-slate-50">Documentation</h1>
+			<p class="mt-4 text-base leading-relaxed text-slate-400">
+				This page is written straight from the plugin's own C++ source, not from memory — the
+				property descriptions below are drawn from the design-intent comments on
+				<code class="rounded bg-white/10 px-1.5 py-0.5 text-[0.85em] text-sky-300">WelkinStarActor.h</code>,
+				<code class="rounded bg-white/10 px-1.5 py-0.5 text-[0.85em] text-sky-300">WelkinCloudComponent.h</code> and
+				<code class="rounded bg-white/10 px-1.5 py-0.5 text-[0.85em] text-sky-300">WelkinAtmosphereTypes.h</code>.
+				If the plugin's Details panel and this page ever disagree, trust the Details panel — this
+				page describes the current beta and will be updated as the plugin changes.
+			</p>
+		</div>
+
+		<div class="mt-14 grid gap-12 lg:grid-cols-[220px_minmax(0,1fr)]">
+			<!-- TOC -->
+			<nav class="hidden lg:block">
+				<div class="sticky top-24 space-y-1 border-l border-white/10 pl-4 text-sm">
+					{toc.map((item) => (
+						<a href={item.href} class="block py-1 text-slate-400 transition hover:text-sky-300">
+							{item.label}
+						</a>
+					))}
+				</div>
+			</nav>
+
+			<div class="min-w-0 space-y-20">
+				<!-- Quickstart -->
+				<section id="quickstart" class="scroll-mt-24">
+					<h2 class="text-2xl font-bold text-slate-50">Quickstart</h2>
+					<p class="mt-2 text-sm text-slate-400">
+						From an empty UE5.5 project to a lit, orbiting planet with weather.
+					</p>
+
+					<ol class="mt-8 space-y-8 border-l border-white/10 pl-6">
+						<li class="relative">
+							<span class="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-slate-950">1</span>
+							<h3 class="font-semibold text-slate-100">Install and enable the plugin</h3>
+							<p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+								Copy the <code class="rounded bg-white/10 px-1 py-0.5 text-[0.85em] text-sky-300">Welkin</code> folder
+								into your project's <code class="rounded bg-white/10 px-1 py-0.5 text-[0.85em] text-sky-300">Plugins/</code> directory
+								(or install it from Fab once it's live), then in the editor go to
+								<span class="text-slate-300">Edit &rarr; Plugins</span>, find <strong>AeroPlanet Volumetrics</strong>,
+								tick it on, and restart the editor. UE 5.5.0, Windows (Win64) only.
+							</p>
+						</li>
+
+						<li class="relative">
+							<span class="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-slate-950">2</span>
+							<h3 class="font-semibold text-slate-100">Drop a planet into the level</h3>
+							<p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+								Search for <strong>Welkin Cloud Actor</strong> in the Place Actors panel and drag it in. It
+								arrives with an Earth-like sky and weather already set — Sphere ground, 6,371&nbsp;km
+								radius, Coverage 0.32, atmosphere on — because the low deck's ground and star settings
+								are copied down to the middle, high and storm decks automatically.
+							</p>
+							<div class="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/[0.06] p-4 text-sm leading-relaxed text-amber-200/90">
+								<strong class="text-amber-300">Ground shape matters here.</strong>
+								With Shape set to Sphere (the default), the actor's own location is the
+								<em>centre</em> of the planet — so an actor dropped at the level's origin with the
+								camera also near the origin starts out roughly 6,371&nbsp;km underground, which
+								renders as nothing but black. Either move the actor down by the ground radius (for
+								Earth, −6,371&nbsp;km on Z) so its surface sits where you're standing, or pull the
+								camera back far enough to see the whole sphere from outside. For the simplest first
+								look, you can also switch <strong>Shape</strong> to <strong>Plane</strong> — the
+								component's own location becomes flat ground directly beneath it, and a deck appears
+								in the sky immediately.
+							</div>
+						</li>
+
+						<li class="relative">
+							<span class="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-slate-950">3</span>
+							<h3 class="font-semibold text-slate-100">Place a star</h3>
+							<p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+								Search for <strong>Welkin Star</strong> and place one anywhere in the level — its own
+								position doesn't matter unless you add it to an orbit. Leave <strong>Spectral
+								Type</strong> at G (Sun-like) or pick another. With the defaults
+								(<strong>Drive Welkin Lighting</strong> and <strong>Drive Directional Light</strong>
+								both on), it immediately lights both the Welkin sky and the rest of the level through
+								a directional light, creating one if the level doesn't have one yet.
+							</p>
+						</li>
+
+						<li class="relative">
+							<span class="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-slate-950">4</span>
+							<h3 class="font-semibold text-slate-100">Make it orbit</h3>
+							<p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+								On the star, add an entry to <strong>Planets</strong> and set <strong>Body</strong> to
+								your cloud actor. Leave the defaults (120&nbsp;second orbit, 20&nbsp;second spin,
+								Semi-Major Axis 1&nbsp;AU) to see it move right away — <strong>Advance Time</strong> is
+								on by default, including in the editor. Because the star and planet can be set up far
+								apart, select the star and use its <strong>Frame This System</strong> button (in its
+								Details panel) to bring both into view at once.
+							</p>
+						</li>
+
+						<li class="relative">
+							<span class="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-slate-950">5</span>
+							<h3 class="font-semibold text-slate-100">Fly down to it</h3>
+							<p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+								Select the planet and press <kbd class="rounded border border-white/15 bg-white/10 px-1.5 py-0.5 text-xs">F</kbd> to
+								focus the viewport on it: the editor camera then rides fully with that body's orbit
+								and spin until you focus something else. Fly toward the surface and the camera (and,
+								optionally, nearby ships or stations) automatically take the same step the planet
+								just took near the surface, so the ground holds still under you instead of the world
+								sliding out from underneath.
+							</p>
+						</li>
+					</ol>
+				</section>
+
+				<!-- Reference -->
+				<section id="reference" class="scroll-mt-24">
+					<h2 class="text-2xl font-bold text-slate-50">Actor &amp; component reference</h2>
+					<p class="mt-2 text-sm leading-relaxed text-slate-400">
+						Only the classes and properties that actually exist in the plugin are documented
+						here. Many more fine-tuning properties live under each component's "Advanced"
+						categories in the Details panel — these tables cover the ones you'll reach for first.
+					</p>
+
+					<div class="mt-10 space-y-14">
+						{referenceSections.map((section) => (
+							<div id={section.id} class="scroll-mt-24">
+								<h3 class="text-lg font-semibold text-slate-100">{section.title}</h3>
+								<p class="mt-1 text-sm italic text-slate-500">{section.subtitle}</p>
+								<p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-400">{section.intro}</p>
+
+								<div class="mt-5 overflow-x-auto rounded-xl border border-white/10">
+									<table class="w-full min-w-[640px] border-collapse text-left text-sm">
+										<thead>
+											<tr class="border-b border-white/10 bg-white/[0.03] text-slate-300">
+												<th class="px-4 py-3 font-semibold">Property</th>
+												<th class="px-4 py-3 font-semibold">Type / default</th>
+												<th class="px-4 py-3 font-semibold">What it does</th>
+											</tr>
+										</thead>
+										<tbody>
+											{section.properties.map((prop, i) => (
+												<tr class={i % 2 === 0 ? 'bg-white/[0.015]' : ''}>
+													<td class="px-4 py-3 align-top font-medium text-sky-300">{prop.name}</td>
+													<td class="px-4 py-3 align-top text-slate-500">
+														<div>{prop.type}</div>
+														<div class="text-xs text-slate-600">{prop.default}</div>
+													</td>
+													<td class="px-4 py-3 align-top text-slate-300">{prop.description}</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						))}
+					</div>
+				</section>
+
+				<!-- Painting -->
+				<section id="painting" class="scroll-mt-24">
+					<h2 class="text-2xl font-bold text-slate-50">Painting coverage by hand</h2>
+					<p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-400">
+						Pick <strong>Welkin Clouds</strong> from the editor's modes menu, then left-drag over
+						the planet to push cloud coverage down under the brush; hold <kbd class="rounded border border-white/15 bg-white/10 px-1.5 py-0.5 text-xs">Shift</kbd> while
+						dragging to erase it back to clear sky. The brush writes to each deck's
+						<code class="rounded bg-white/10 px-1 py-0.5 text-[0.85em] text-sky-300">CoveragePaint</code> map — a
+						2,048×1,024 equirectangular texture, about 20&nbsp;km per texel at the equator, sized
+						for shaping weather systems rather than individual clouds. It moves the coverage
+						threshold locally rather than the density, so painted cloud keeps the same shapes and
+						edges as everywhere else.
+					</p>
+
+					<div class="mt-6 overflow-x-auto rounded-xl border border-white/10">
+						<table class="w-full min-w-[520px] border-collapse text-left text-sm">
+							<thead>
+								<tr class="border-b border-white/10 bg-white/[0.03] text-slate-300">
+									<th class="px-4 py-3 font-semibold">Function</th>
+									<th class="px-4 py-3 font-semibold">What it does</th>
+								</tr>
+							</thead>
+							<tbody>
+								{paintFunctions.map((fn, i) => (
+									<tr class={i % 2 === 0 ? 'bg-white/[0.015]' : ''}>
+										<td class="px-4 py-3 align-top font-mono text-xs text-sky-300">{fn.signature}</td>
+										<td class="px-4 py-3 align-top text-slate-300">{fn.description}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- Limitations -->
+				<section id="limitations" class="scroll-mt-24">
+					<h2 class="text-2xl font-bold text-slate-50">Known limitations</h2>
+					<p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-400">
+						Written down plainly, because a features page that only lists what works isn't
+						trustworthy.
+					</p>
+					<ul class="mt-6 space-y-3">
+						{limitations.map((item) => (
+							<li class="flex gap-3 rounded-lg border border-white/10 bg-white/[0.02] p-4 text-sm leading-relaxed text-slate-300">
+								<span class="mt-0.5 text-amber-400" aria-hidden="true">&#9888;</span>
+								<span>{item}</span>
+							</li>
+						))}
+					</ul>
+				</section>
+
+				<div class="rounded-2xl border border-white/10 bg-white/[0.02] p-8 text-sm text-slate-400">
+					Found something on this page that doesn't match the plugin, or have a question that
+					isn't answered here? The
+					<a href="https://discord.gg/CW4cqrszqD" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:underline">
+						Discord server
+					</a>
+					is the fastest way to reach us, or email
+					<a href="mailto:naokun1037@gmail.com" class="text-sky-300 hover:underline">naokun1037@gmail.com</a>.
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>

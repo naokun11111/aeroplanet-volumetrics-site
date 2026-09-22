@@ -1,0 +1,64 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-white/10 py-12 text-sm text-slate-500">
+	<div class="mx-auto max-w-6xl px-6">
+		<div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+			<div class="max-w-sm">
+				<div class="flex items-center gap-2 text-slate-300">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-5 w-5 shrink-0" fill="none" aria-hidden="true">
+						<circle cx="32" cy="32" r="14" fill="#38bdf8" />
+						<ellipse cx="32" cy="32" rx="30" ry="9" stroke="#7dd3fc" stroke-width="2.4" fill="none" opacity="0.7" transform="rotate(-18 32 32)" />
+					</svg>
+					<span class="font-semibold">AeroPlanet Volumetrics</span>
+				</div>
+				<p class="mt-3 leading-relaxed">
+					A UE5.5 plugin developed by Aero Interactive. Not affiliated with, endorsed by,
+					or sponsored by Epic Games.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+				<div>
+					<p class="mb-3 font-semibold text-slate-300">Product</p>
+					<ul class="space-y-2">
+						<li><a href="/#features" class="transition hover:text-sky-300">Features</a></li>
+						<li><a href="/#how-it-renders" class="transition hover:text-sky-300">How it renders</a></li>
+						<li><a href="/#pricing" class="transition hover:text-sky-300">Pricing</a></li>
+						<li><a href="/docs/" class="transition hover:text-sky-300">Documentation</a></li>
+					</ul>
+				</div>
+				<div>
+					<p class="mb-3 font-semibold text-slate-300">Support</p>
+					<ul class="space-y-2">
+						<li>
+							<a href="https://discord.gg/CW4cqrszqD" target="_blank" rel="noopener noreferrer" class="transition hover:text-sky-300">
+								Discord
+							</a>
+						</li>
+						<li>
+							<a href="mailto:naokun1037@gmail.com" class="transition hover:text-sky-300">
+								naokun1037@gmail.com
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div>
+					<p class="mb-3 font-semibold text-slate-300">Maker</p>
+					<ul class="space-y-2">
+						<li>
+							<a href="https://studio-site-ten.vercel.app" target="_blank" rel="noopener noreferrer" class="transition hover:text-sky-300">
+								Aero Interactive
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p class="mt-10 border-t border-white/5 pt-6 text-xs text-slate-600">
+			&copy; {year} Aero Interactive. All rights reserved.
+		</p>
+	</div>
+</footer>

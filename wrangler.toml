@@ -1,0 +1,11 @@
+# Cloudflare Pages の設定。
+#
+# 実際のデプロイは GitHub 連携の継続的デプロイ(Cloudflare Pages ダッシュボードで
+# このリポジトリを連携し、ビルドコマンド "npm run build" / 出力ディレクトリ "dist" を
+# 指定する)で行う想定。この wrangler.toml はローカルで `wrangler pages dev` /
+# `wrangler pages deploy` を試したいときのための設定で、KV 等の結び付けは持たない
+# (静的サイトのみ、サーバー側の状態は無い)。
+
+name = "aeroplanet-volumetrics"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-01"

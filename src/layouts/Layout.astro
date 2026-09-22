@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'AeroPlanet Volumetrics — Planetary Clouds & Atmosphere for UE5.5',
+	description = 'A self-contained UE5.5 plugin for volumetric clouds, atmosphere and weather that renders on spheres and planes alike — no engine Volumetric Cloud, no Sky Atmosphere required.',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		<title>{title}</title>
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:site_name" content="AeroPlanet Volumetrics" />
+		<meta property="og:locale" content="en_US" />
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<meta name="theme-color" content="#020617" />
+	</head>
+	<body class="bg-slate-950 text-slate-200 antialiased selection:bg-sky-500/30">
+		<div
+			class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"
+			aria-hidden="true"
+		></div>
+		<Header />
+		<slot />
+		<Footer />
+	</body>
+</html>
