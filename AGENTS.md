@@ -18,10 +18,17 @@ etc.) that aren't actually implemented there.
 
 ## Deployment
 
-This site deploys to Cloudflare Pages via a GitHub-connected continuous deployment, not a
-one-off `wrangler pages deploy`. See `README.md` for the exact setup steps and for what has
-and hasn't been done yet (as of this writing: nothing has been pushed to GitHub and no
-Cloudflare Pages project exists — both require 代表's go-ahead first).
+GitHub repo: https://github.com/naokun11111/aeroplanet-volumetrics-site (pushed).
+Live snapshot: https://aeroplanet-volumetrics.pages.dev (Cloudflare Pages, direct-upload —
+deployed manually via `wrangler pages deploy dist`, does not auto-update on push).
+
+The intended end state is Cloudflare Pages connected to the GitHub repo for continuous
+deployment, matching studio-site's GitHub → Vercel pattern — but this is currently blocked on
+a one-time browser-based GitHub App authorization that only a human with Cloudflare dashboard
+access (`aerointeractive2026@gmail.com`) can complete (confirmed via the Cloudflare API:
+error `8000011` creating a Git-sourced project, error `8000069` trying to attach Git to the
+existing direct-upload project). See `README.md`'s Deployment section for the exact remaining
+steps and for why this can't be finished via CLI/API alone.
 
 ## Documentation
 

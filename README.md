@@ -3,10 +3,11 @@
 The marketing + documentation site for **AeroPlanet Volumetrics** (社内呼称: Welkin), a UE5.5
 plugin for volumetric planetary clouds, atmosphere and orbits developed by Aero Interactive.
 
-Not yet live. The plugin itself is not published on Fab yet (a visual issue is being fixed
-before launch), so this site does not link to a Fab purchase page — the "Get the plugin" /
-pricing CTAs point at the studio's Discord for launch updates instead. Update these once the
-Fab listing is live.
+Live (as a manual snapshot) at https://aeroplanet-volumetrics.pages.dev — see "Deployment"
+below for the current state. The **plugin itself** is not published on Fab yet (a visual issue
+is being fixed before launch), so the site doesn't link to a Fab purchase page — the "Get the
+plugin" / pricing CTAs point at the studio's Discord for launch updates instead. Update these
+once the Fab listing is live.
 
 ## Tech stack
 
@@ -40,39 +41,52 @@ page) so copy edits don't require touching markup.
 | `npm run build` | Build to `./dist/` |
 | `npm run preview` | Preview the production build locally |
 
-## Deployment — Cloudflare Pages via GitHub (continuous deployment)
+## Deployment — GitHub repo done, live URL up, Git-connected continuous deploy still blocked
 
-Following the studio's existing pattern (studio-site → GitHub → Vercel auto-deploy), this site
-is meant to deploy the same way but to **Cloudflare Pages**, connected to a GitHub repository
-rather than pushed ad hoc with `wrangler pages deploy`:
+Status as of 2026-09-22 (代表 approved "aeroplanet-volumetrics-site でいい, 進めていいよ"):
 
-1. **Create the GitHub repository** (not yet done — needs 代表's go-ahead before pushing).
-   Suggested name: `aeroplanet-volumetrics-site`, under the same account as studio-site
-   (`naokun11111`), public, matching `studio-site` → `aero-interactive-site`.
-2. **Push this local repository** to that remote (`git remote add origin ...` then
-   `git push -u origin main`).
-3. **Connect Cloudflare Pages to the GitHub repo** (Cloudflare dashboard → Pages → Create a
-   project → Connect to Git → pick the repo):
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Node version: 22 or newer (`engines.node` in `package.json` requires `>=22.12.0`)
-4. Every push to the connected branch then builds and deploys automatically — no manual
-   `wrangler` invocation needed for normal updates.
+- **GitHub repository**: created and pushed —
+  [`naokun11111/aeroplanet-volumetrics-site`](https://github.com/naokun11111/aeroplanet-volumetrics-site)
+  (public, default branch `main`).
+- **Live production URL (right now)**: https://aeroplanet-volumetrics.pages.dev — a Cloudflare
+  Pages **direct-upload** project (`aeroplanet-volumetrics`), deployed once with
+  `wrangler pages deploy dist`. This does **not** auto-update on push; it's a manual snapshot.
+- **GitHub-connected continuous deployment (the actual goal)**: **not yet possible via
+  CLI/API.** Attempting to create a Pages project with `source.type = "github"` on the
+  `aerointeractive2026@gmail.com` Cloudflare account returns error `8000011` ("internal issue
+  with your Cloudflare Pages Git installation"), and attempting to attach a GitHub source to
+  the existing direct-upload project returns `8000069` ("You cannot update the `source` object
+  in a Direct Uploads project"). Both together mean: **this Cloudflare account has never
+  authorized the Cloudflare Pages GitHub App**, and that authorization is a one-time
+  **browser-based OAuth step that only a human with dashboard access can complete** — there is
+  no API path around it.
 
-`wrangler.toml` in this repo is **not** the deployment mechanism for step 3 (Cloudflare Pages'
-GitHub integration reads its build settings from the dashboard, not from this file). It exists
-only so `wrangler pages dev` / a one-off `wrangler pages deploy` can be run locally if ever
-needed for a quick preview, matching the documentation style already used in `kies-site`.
+### The one remaining manual step
 
-### What is intentionally *not* done yet
+Whoever can access the Cloudflare dashboard as `aerointeractive2026@gmail.com`:
 
-Per house rules (外向けの公開は代表確認後), the following were deliberately left undone and
-need 代表's explicit go-ahead first:
+1. Go to https://dash.cloudflare.com → **Workers & Pages** → **Create** → the **Pages** tab →
+   **Connect to Git**.
+2. Authorize the **Cloudflare Pages** GitHub App for the `naokun11111` account (scope it to
+   just `aeroplanet-volumetrics-site`, or "all repositories" if that's more convenient going
+   forward).
+3. Select the `aeroplanet-volumetrics-site` repository.
+4. Set: **Production branch** `main`, **Build command** `npm run build`, **Build output
+   directory** `dist`. (Framework preset "Astro" fills these in automatically if offered.)
+   Use a **different project name** than `aeroplanet-volumetrics` (e.g.
+   `aeroplanet-volumetrics-site`) — Cloudflare won't let a Git-connected project reuse a name
+   already taken by a direct-upload project, and the existing `aeroplanet-volumetrics` project
+   can't be converted in place.
+5. Save and deploy. From then on, every push to `main` builds and deploys automatically.
 
-- No GitHub repository has been created.
-- Nothing has been pushed anywhere; this project only exists as a local git repository.
-- No Cloudflare Pages project has been created or connected.
-- No real Fab listing URL exists yet, so none is linked from the site.
+Once that one-time authorization exists, the rest can be done non-interactively again (via the
+same Cloudflare API calls that failed above, or by repeating step 3/4 in the dashboard for any
+future project) — worth asking 代表窓口 (web) to finish the wiring at that point rather than
+redoing the browser flow from scratch.
+
+`wrangler.toml` in this repo documents the direct-upload project's settings; it is **not** read
+by Cloudflare Pages' GitHub integration (that reads its build settings from the dashboard/API
+project config, not from a file in the repo).
 
 ## Content accuracy
 
